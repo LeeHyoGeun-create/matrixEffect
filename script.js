@@ -5,6 +5,28 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+gradient.addColorStop(0, "red");
+gradient.addColorStop(0.2, "yellow");
+gradient.addColorStop(0.4, "green");
+gradient.addColorStop(0.6, "cyan");
+gradient.addColorStop(0.8, "blue");
+gradient.addColorStop(1, "magenta");
+
+function resizeGradient(gradient, width, height) {
+  gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, "red");
+  gradient.addColorStop(0.2, "yellow");
+  gradient.addColorStop(0.4, "green");
+  gradient.addColorStop(0.6, "cyan");
+  gradient.addColorStop(0.8, "blue");
+  gradient.addColorStop(1, "magenta");
+}
+
+/*
+let gradient = ctx.RadialGradient(x1,y1,radius1,s2,y2,radius2);
+*/
+
 class Symbol {
   constructor(x, y, fontSize, canvasHeight) {
     this.characters =
@@ -54,7 +76,7 @@ class Effect {
 
 const effect = new Effect(canvas.width, canvas.height);
 let lastTime = 0;
-const fps = 15;
+const fps = 30;
 const nextFrame = 1000 / fps; //트리거하고 그릴 때 까지 기다리는 밀리초의 양
 // 다음 초는 초당 30 프레임을 원하므로 nextFrame만큼 공백이 있어야함
 let timer = 0; // 델타타임 누적변수
@@ -65,10 +87,11 @@ function animate(timeStamp) {
   const deltaTime = timeStamp - lastTime;
   lastTime = timeStamp;
   if (timer > nextFrame) {
-    ctx.fillStyle = "rgba(0,0,0,0.05)"; // 투명한 레이어가 덧씌워지면서 위에게 투명해짐
+    ctx.fillStyle = "rgba(0,0,0,0.1)"; // 투명한 레이어가 덧씌워지면서 위에게 투명해짐
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.textAlign = "center";
-    ctx.fillStyle = "#0aff0a";
+    ctx.fillStyle = gradient;
+    // "#0aff0a;
     ctx.font = effect.fontSize + "px monospace"; // monospace 동일한 양의 수평 공간 차지함
     effect.symbols.forEach((symbol) => symbol.draw(ctx));
     timer = 0;
@@ -87,5 +110,6 @@ animate(0); // 원하는 timeStamp 값을 넣어줘야 함
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  resizeGradient(gradient, canvas.width, canvas.height);
   effect.resize(canvas.width, canvas.height);
 });
