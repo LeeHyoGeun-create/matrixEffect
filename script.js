@@ -43,6 +43,13 @@ class Effect {
       this.symbols[i] = new Symbol(i, 0, this.fontSize, this.canvasHeight);
     }
   }
+  resize(width, height) {
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+    this.columns = this.canvasWidth / this.fontSize;
+    this.symbols = [];
+    this.#initialize();
+  }
 }
 
 const effect = new Effect(canvas.width, canvas.height);
@@ -76,3 +83,9 @@ function animate(timeStamp) {
   console.log(`timer: ${timer}`);
 }
 animate(0); // 원하는 timeStamp 값을 넣어줘야 함
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  effect.resize(canvas.width, canvas.height);
+});
